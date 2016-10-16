@@ -30,8 +30,37 @@ COPY 000-default.conf /etc/apache2/sites-available/
 
 VOLUME /var/www/html
 
-ENV PHPMYADMIN_VERSION 4.6.1
-ENV WORDPRESS_SHA1 027e065d30a64720624a7404a1820e6c6fff1202
+# ENV PHPMYADMIN_VERSION 4.6.1
+# ENV WORDPRESS_SHA1 027e065d30a64720624a7404a1820e6c6fff1202
+
+# Include keyring to verify download
+COPY phpmyadmin.keyring /tmp/
+
+# Calculate download URL
+ENV VERSION 4.6.4
+ENV URL https://files.phpmyadmin.net/phpMyAdmin/${VERSION}/phpMyAdmin-${VERSION}-all-languages.tar.gz
+
+# Download tarball, verify it using gpg and extract
+RUN set -x \
+    && export GNUPGHOME="$(mktemp -d)" \
+    && curl --output phpMyAdmin.tar.gz --location $URL \
+    && curl --output phpMyAdmin.tar.gz.asc --location $URL.asc \
+    && gpgv --keyring /tmp/phpmyadmin.keyring phpMyAdmin.tar.gz.asc phpMyAdmin.tar.gz \
+    && rm -rf "$GNUPGHOME" \
+    && tar xzf phpMyAdmin.tar.gz \
+    && rm -f phpMyAdmin.tar.gz phpMyAdmin.tar.gz.asc \
+    && mv phpMyAdmin-$VERSION-all-languages /var/www/pma.dev \
+    && rm -rf /var/www/pma.dev/js/jquery/src/ /var/www/pma.dev/js/openlayers/src/ /var/www/pma.dev/setup/ /var/www/pma.dev/sql/ /var/www/pma.dev/examples/ /var/www/pma.dev/test/ /var/www/pma.dev/po/ \
+    && chown -R www-data:www-data /var/www/pma.dev \
+    && find /var/www/pma.dev -type d -exec chmod 750 {} \; \
+    && find /var/www/pma.dev -type f -exec chmod 640 {} \;
+
+COPY config.inc.php /var/www/pma.dev/
+# Copy main script
+COPY run.sh /run.sh
+RUN chmod u+rwx /run.sh
+
+ENTRYPOINT ["/run.sh"]
 
 #RUN set -x \
 #	&& curl -o wordpress.tar.gz -fSL "https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz" \
