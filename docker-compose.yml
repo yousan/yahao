@@ -3,15 +3,34 @@ version: '2'
 services:
 
   php5.6-apache:
-    image: yousan/php5.6-apache:0.3
+    image: yousan/php5.6-apache:0.6
     ports:
       - 80:80
-    environment:
-      WORDPRESS_DB_PASSWORD: example
+    volumes:
+      - ~/public_html:/var/www/vhosts:ro
+#    environment:
+#      WORDPRESS_DB_PASSWORD: example
+#    links:
+#      - links
 
   mysql:
     image: mariadb
     environment:
       MYSQL_ROOT_PASSWORD: example
+      MYSQL_USER: yousan
+      MYSQL_PASSWORD: hogehoge
     ports:
       - 3306:3306
+#    links:
+#      - db
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+     - PMA_ARBITRARY=1
+    restart: always
+    ports:
+     - 8080:80
+    volumes:
+     - /sessions

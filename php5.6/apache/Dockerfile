@@ -17,12 +17,21 @@ RUN { \
 		echo 'opcache.enable_cli=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
-RUN a2enmod rewrite expires
+RUN a2enmod rewrite expires vhost_alias
+
+ADD sources.list /etc/apt/
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 40976EAF437D05B5 && \
+    apt-get update && \
+    apt-get install -y \
+    emacs-nox \
+    less
+ENV TERM=xterm
+COPY 000-default.conf /etc/apache2/sites-available/
 
 VOLUME /var/www/html
 
-# ENV WORDPRESS_VERSION 4.6.1
-# ENV WORDPRESS_SHA1 027e065d30a64720624a7404a1820e6c6fff1202
+ENV PHPMYADMIN_VERSION 4.6.1
+ENV WORDPRESS_SHA1 027e065d30a64720624a7404a1820e6c6fff1202
 
 #RUN set -x \
 #	&& curl -o wordpress.tar.gz -fSL "https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz" \
@@ -37,4 +46,4 @@ VOLUME /var/www/html
 
 # ENTRYPOINT resets CMD
 # ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["apache2-foreground"]
+# CMD ["apache2-foreground"]
