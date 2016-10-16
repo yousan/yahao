@@ -2,8 +2,8 @@ version: '2'
 
 services:
 
-  wordpress:
-    image: yousan/php5.6-apache
+  php5.6-apache:
+    image: yousan/php5.6-apache:0.3
     ports:
       - 80:80
     environment:
