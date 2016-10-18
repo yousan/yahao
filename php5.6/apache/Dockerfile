@@ -57,10 +57,10 @@ RUN set -x \
 
 COPY config.inc.php /var/www/pma.dev/
 # Copy main script
-COPY run.sh /run.sh
-RUN chmod u+rwx /run.sh
+COPY run.sh /var/www/pma.dev/run.sh
+RUN chmod u+rwx /var/www/pma.dev/run.sh
 
-ENTRYPOINT ["/run.sh"]
+RUN /var/www/pma.dev/run.sh
 
 #RUN set -x \
 #	&& curl -o wordpress.tar.gz -fSL "https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz" \

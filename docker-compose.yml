@@ -2,28 +2,38 @@ version: '2'
 
 services:
 
-  php5.6-apache:
+  php5.6-apache.dev:
     image: yousan/php5.6-apache:0.6
     ports:
       - 80:80
     volumes:
       - ~/public_html:/var/www/vhosts:ro
-#    environment:
+    environment:
+       PMA_HOST: mysql
+       PMA_USER: root
+       PMA_PASSWORD: example
 #      WORDPRESS_DB_PASSWORD: example
 #    links:
 #      - links
 
-  mysql:
+  mysql.dev:
     image: mariadb
     environment:
       MYSQL_ROOT_PASSWORD: example
       MYSQL_USER: yousan
-      MYSQL_PASSWORD: hogehoge
+      MYSQL_PASSWORD: example
     ports:
       - 3306:3306
 #    links:
 #      - db
 
+  dnsmasq.dev:
+    image: yousan/dnsmasq:0.6
+#    image: andyshinn/dnsmasq
+    ports:
+      - 53:53
+    cap_add:
+      - NET_ADMIN
 #  phpmyadmin:
 #    image: phpmyadmin/phpmyadmin
 #    container_name: phpmyadmin
