@@ -7,7 +7,7 @@ services:
     ports:
       - 80:80
     volumes:
-      - ~/public_html:/var/www/vhosts:ro
+      - ~/public_html:/var/www/vhosts
     environment:
        PMA_HOST: mysql
        PMA_USER: root
@@ -29,18 +29,8 @@ services:
 
   dnsmasq.dev:
     image: yousan/dnsmasq:0.6
-#    image: andyshinn/dnsmasq
     ports:
-      - 53:53
+      - 53:53/tcp
+      - 53:53/udp
     cap_add:
       - NET_ADMIN
-#  phpmyadmin:
-#    image: phpmyadmin/phpmyadmin
-#    container_name: phpmyadmin
-#    environment:
-#     - PMA_ARBITRARY=1
-#    restart: always
-#    ports:
-#     - 8080:80
-#    volumes:
-#     - /sessions
