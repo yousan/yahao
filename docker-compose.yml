@@ -9,23 +9,16 @@ services:
     volumes:
       - ~/public_html:/var/www/vhosts
     environment:
-       PMA_HOST: mysql
-       PMA_USER: root
-       PMA_PASSWORD: example
-#      WORDPRESS_DB_PASSWORD: example
-#    links:
-#      - links
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: example
 
   mysql.dev:
     image: mariadb
     environment:
       MYSQL_ROOT_PASSWORD: example
-      MYSQL_USER: yousan
-      MYSQL_PASSWORD: example
     ports:
       - 3306:3306
-#    links:
-#      - db
 
   dnsmasq.dev:
     image: yousan/dnsmasq:0.6
